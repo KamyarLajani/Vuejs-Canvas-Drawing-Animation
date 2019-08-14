@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Canvas Animation</title>
+	<link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+	<div id="app">
+		<template>
+		    <div>
+		        <div class="container">
+		            
+		            <canvas width="700" height="500" ref="canvas" @mousedown="mouseDown($event)" @mouseup="mouseUp()" @mousemove="mouseMove($event)"></canvas>
+		            <img src="./images/pencil.png" alt="pencil" ref="pen"/>
+		            
+					<button @click="startit()">Start</button>
+					<button class="reset" @click="reset()">RESET ALL</button>
+					<p style="color: gray; text-align: center">Draw then click on START button</p>
+					
+		        </div>
+		        
+		    </div>
+		</template>
+	</div>
+
+	<script type="text/javascript">
+
+		new Vue({
+			el: '#app',
+		 	// declaring canvas element
+		    mounted() {
+		        canvas = this.$refs.canvas;
+		        ctx = canvas.getContext('2d');
+		    },
+		   data: {
+		            x: 0,
+		            y: 0,
+					// x and y starting points when mouse down fired
+		            x_st : 0,
+		            y_st : 0,
+		            mDown: false,
+		            pen : true,
+					color: '#000000',
+					// array of x and y points
+		            points: []
+
+		    },
+		    methods: {
+		       
+		        mouseDown: function(e) {
+		            this.mDown = true;
+					
+		            ctx.beginPath();
+		            ctx.lineWidth = 4;
+		            ctx.strokeStyle = this.color;
+		            this.x_st  = e.offsetX;
+		            this.y_st  = e.offsetY;
+		            ctx.moveTo(this.x_st,this.y_st);
+					this.points.push('x');
+					this.points.push('y');
+		       
+		        },
+
+		        mouseUp: function() {
+		            this.mDown = false
+		            
+		        },
+		         
+		        mouseMove: function(e) {
+		        // Mouse down should be fire before mouse move
+		           if(this.mDown){
+		                this.x  = e.offsetX;
+		                this.y  = e.offsetY;
+		                this.points.push(this.x);
+		                this.points.push(this.y);
+		                ctx.lineTo(this.x,this.y);   
+		                ctx.stroke();
+						console.log(this.points);
+						
+		           }
+		        },
+				// Drawing animation statrs here
+		        startit: function(){
+					// clean drawed by user
+		            ctx.clearRect(0, 0, canvas.width, canvas.height);
+					// draw by animation
+		            ctx.beginPath();
+		            ctx.lineWidth = 4;
+		            ctx.strokeStyle = this.color;
+		            ctx.moveTo(this.x_st, this.y_st);
+		            let animation = setInterval(animate, 15);
+		            let x, y, i=0, image, arr = this.points, refer = this.$refs.pen;
+					this.points = [];
+					
+		            function animate() {
+		                x = arr[i];
+		                y = arr[i+1];
+		                
+						// stop animation
+		                if(i >= arr.length){
+		                    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+							
+		                    clearInterval(animation);
+							image.style.left = `${0}px`;
+		                    image.style.top = `${0}px`;
+							
+							
+		                }
+						// pen image animation
+		                else {
+							// if there is any separate lines
+							if(arr[i] === 'x') {
+								ctx.beginPath();
+								ctx.moveTo(arr[i+1], arr[i+2]);
+							}
+							
+							image = refer;
+							image.style.left = `${x+5}px`;
+							image.style.top = `${y-30}px`;
+							ctx.lineTo(x, y);   
+							ctx.stroke();
+							i+=2; 
+		                }
+		                
+		            }
+		        },
+				reset: function() {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					this.points = [];
+				}
+				
+		    }
+    });
+	</script>
+</body>
+</html>
