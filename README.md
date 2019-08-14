@@ -6,7 +6,7 @@ This app used webpack, babel. Use [Vue-CLI](https://cli.vuejs.org/) to simply in
 
 
 
-![Image](https://raw.githubusercontent.com/KamyarLajani/Vuejs-Canvas-Drawing-Animation/branch/path/to/images/demo.gif)
+![Image](https://raw.githubusercontent.com/KamyarLajani/Vuejs-Canvas-Drawing-Animation/branch/images/demo.gif)
 
 
 [Demo](https://codepen.io/KamyarLajani/pen/KKPzdqL)  on Codepen.io 
